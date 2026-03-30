@@ -1,0 +1,1637 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ══ THEME TOKENS ══════════════════════════════════════════ */
+    :root, [data-theme="dark"] {
+      --bg:            #0C0F0E;
+      --surface:       #141918;
+      --surface-2:     #1C221F;
+      --surface-3:     #161C19;
+      --border:        rgba(255,255,255,0.07);
+      --border-faint:  rgba(255,255,255,0.04);
+      --border-green:  rgba(29,184,126,0.2);
+      --text:          #F0F2F1;
+      --text-muted:    #7A8A85;
+      --text-dim:      #4A5855;
+      --green:         #1DB87E;
+      --red:           #E05A3A;
+      --amber:         #D4A853;
+      --slider-bg:     rgba(255,255,255,0.07);
+      --slider-border: #0C0F0E;
+      --bar-track:     rgba(255,255,255,0.06);
+      --pill-bg:       rgba(255,255,255,0.04);
+      --shadow:        none;
+      --toggle-track:  #1C221F;
+      --input-bg:      #1C221F;
+      --input-border:  rgba(255,255,255,0.1);
+      --input-text:    #F0F2F1;
+      --select-arrow:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A8A85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    [data-theme="light"] {
+      --bg:            #F4F7F5;
+      --surface:       #FFFFFF;
+      --surface-2:     #EBF5EF;
+      --surface-3:     #F0F5F2;
+      --border:        rgba(0,0,0,0.08);
+      --border-faint:  rgba(0,0,0,0.05);
+      --border-green:  rgba(15,110,86,0.18);
+      --text:          #0F1A16;
+      --text-muted:    #3D5C50;
+      --text-dim:      #8AA89C;
+      --green:         #0A7A54;
+      --red:           #B83010;
+      --amber:         #8A6010;
+      --slider-bg:     rgba(0,0,0,0.10);
+      --slider-border: #F4F7F5;
+      --bar-track:     rgba(0,0,0,0.08);
+      --pill-bg:       rgba(0,0,0,0.05);
+      --shadow:        0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.04);
+      --toggle-track:  #D8EDE4;
+      --input-bg:      #FFFFFF;
+      --input-border:  rgba(0,0,0,0.12);
+      --input-text:    #0F1A16;
+      --select-arrow:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233D5C50' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    /* ══ BASE ══════════════════════════════════════════════════ */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0 0 5rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ══ THEME TOGGLE ══════════════════════════════════════════ */
+    .theme-toggle {
+      position: fixed;
+      top: 1.125rem; right: 1.25rem;
+      z-index: 200;
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 10px 5px 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .theme-toggle:hover { opacity: 0.85; }
+    .toggle-track {
+      width: 32px; height: 18px;
+      background: var(--toggle-track);
+      border-radius: 9px;
+      position: relative; flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .toggle-thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--green);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] .toggle-thumb { transform: translateX(14px); }
+    .toggle-label {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.04em; white-space: nowrap;
+      transition: color 0.3s; user-select: none;
+    }
+
+    /* ══ HEADER ════════════════════════════════════════════════ */
+    .header {
+      padding: 3rem 1.5rem 2rem;
+      max-width: 600px; margin: 0 auto;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .wordmark {
+      font-family: 'DM Serif Display', serif;
+      font-size: 13px; letter-spacing: 0.12em;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 1.75rem; display: block;
+    }
+    .headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(24px, 4.5vw, 34px);
+      font-weight: 400; line-height: 1.2;
+      color: var(--text); margin-bottom: 0.75rem;
+    }
+    .headline em       { font-style: italic; }
+    .headline em.green { color: var(--green); }
+    .headline em.red   { color: var(--red); }
+    .sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 440px; }
+
+    /* ══ TAB BAR ═══════════════════════════════════════════════ */
+    .tab-bar {
+      max-width: 600px; margin: 0 auto;
+      padding: 1.25rem 1.5rem 0;
+      display: flex;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1; padding: 0.75rem 1rem;
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-dim); cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      letter-spacing: 0.02em; text-align: center;
+    }
+    .tab-btn:hover { color: var(--text-muted); }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+    /* ══ PANELS ════════════════════════════════════════════════ */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .calc-body { max-width: 600px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .section-label {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 1.25rem; display: block;
+    }
+
+    /* ══ SLIDERS ═══════════════════════════════════════════════ */
+    .input-group { margin-bottom: 2rem; }
+    .input-label {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.08em; display: block; margin-bottom: 0.75rem;
+    }
+    .input-row { display: flex; align-items: center; gap: 16px; }
+    .input-row input[type=range] {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 2px; background: var(--slider-bg);
+      border-radius: 1px; outline: none; cursor: pointer;
+    }
+    .input-row input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--green);
+      border: 2px solid var(--slider-border);
+      box-shadow: 0 0 0 1px var(--green);
+      cursor: pointer; transition: transform 0.15s;
+    }
+    .input-row input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .input-row input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--green);
+      border: 2px solid var(--slider-border); cursor: pointer;
+    }
+    .input-val {
+      font-size: 15px; font-weight: 500;
+      color: var(--text); min-width: 90px;
+      text-align: right; font-variant-numeric: tabular-nums;
+    }
+
+    /* ══ BIG CARDS ═════════════════════════════════════════════ */
+    .big-cards { display: grid; gap: 0.75rem; margin: 2.5rem 0 0.75rem; }
+    .big-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      box-shadow: var(--shadow);
+    }
+    .big-card.primary { background: var(--surface-2); border-color: var(--border-green); }
+    .big-card-body { flex: 1; min-width: 0; }
+    .big-card-label {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 0.35rem;
+    }
+    .big-card-main {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px; font-weight: 400;
+      font-variant-numeric: tabular-nums; line-height: 1;
+    }
+    .big-card-main.red   { color: var(--red); }
+    .big-card-main.green { color: var(--green); }
+    .big-card-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+    .card-cta {
+      flex-shrink: 0; padding: 0.5rem 0.875rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.01em; border: none;
+    }
+    .card-cta:hover { opacity: 0.82; transform: translateY(-1px); }
+    .card-cta-ghost {
+      background: #FFFFFF;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      color: #0F1A16;
+    }
+    [data-theme="dark"] .card-cta-ghost {
+      background: #FFFFFF;
+      border-color: rgba(255,255,255,0.2);
+      color: #0F1A16;
+    }
+    .card-cta-solid {
+      background: var(--green); color: #fff;
+      display: inline-flex; align-items: center;
+    }
+    [data-theme="dark"] .card-cta-solid { color: #000; }
+    .caveat-text {
+      font-size: 10.5px; color: var(--text-dim);
+      line-height: 1.65; margin-bottom: 2rem; padding: 0 0.25rem;
+    }
+
+    /* ══ BREAKDOWN TABLE ═══════════════════════════════════════ */
+    .breakdown {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      margin-bottom: 2rem; box-shadow: var(--shadow);
+    }
+    .breakdown-header {
+      padding: 0.875rem 1.25rem;
+      font-size: 11px; font-weight: 500;
+      color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .result-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline;
+      padding: 0.875rem 1.25rem;
+      border-bottom: 0.5px solid var(--border-faint); gap: 1rem;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-label { font-size: 13px; color: var(--text-muted); line-height: 1.45; max-width: 62%; }
+    .result-amount {
+      font-size: 15px; font-weight: 500;
+      color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .result-amount.red   { color: var(--red); }
+    .result-amount.green { color: var(--green); }
+
+    /* ══ TIER PICKER ═══════════════════════════════════════════ */
+    .tier-picker {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem; margin-bottom: 2rem;
+    }
+    .tier-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px; padding: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .tier-card:hover { border-color: rgba(29,184,126,0.35); background: var(--surface-3); }
+    .tier-card.selected { border-color: var(--green); background: var(--surface-2); }
+    .tier-pill {
+      display: inline-block; font-size: 9px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-dim); background: var(--pill-bg);
+      border-radius: 4px; padding: 2px 6px; margin-bottom: 0.6rem;
+    }
+    .tier-card.selected .tier-pill { color: var(--green); background: rgba(29,184,126,0.1); }
+    .tier-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; line-height: 1.3; }
+    .tier-price { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text-muted); line-height: 1.2; }
+    .tier-card.selected .tier-price { color: var(--green); }
+    .tier-note { font-size: 10px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+    /* ══ CARRIED INPUTS ════════════════════════════════════════ */
+    .carried-inputs {
+      display: flex; align-items: center;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 10px; padding: 0.75rem 1rem;
+      margin-bottom: 2rem; flex-wrap: wrap; gap: 0.5rem;
+      box-shadow: var(--shadow);
+    }
+    .carried-row { display: flex; align-items: baseline; gap: 0.5rem; flex: 1; min-width: 140px; }
+    .carried-label {
+      font-size: 11px; font-weight: 500; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap;
+    }
+    .carried-value { font-size: 14px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+    .carried-edit {
+      font-size: 11px; color: var(--green);
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; padding: 0; white-space: nowrap; margin-left: auto;
+    }
+    .carried-edit:hover { opacity: 0.75; }
+
+    /* ══ ROI HERO CARDS ════════════════════════════════════════ */
+    .roi-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1.5rem 0; }
+    .roi-hero-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px; padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .roi-hero-card.accent { background: var(--surface-2); border-color: var(--border-green); }
+    .roi-hero-label {
+      font-size: 11px; font-weight: 500; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;
+    }
+    .roi-hero-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px; font-weight: 400; line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .roi-hero-value.green { color: var(--green); }
+    .roi-hero-value.amber { color: var(--amber); }
+    .roi-hero-value.red   { color: var(--red); }
+    .roi-hero-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+    /* ══ PAYBACK BAR ═══════════════════════════════════════════ */
+    .payback-bar-wrap {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px; padding: 1.25rem;
+      margin-bottom: 1rem; box-shadow: var(--shadow);
+    }
+    .payback-bar-label {
+      display: flex; justify-content: space-between;
+      align-items: baseline; margin-bottom: 0.75rem;
+    }
+    .payback-bar-title { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+    .payback-bar-months { font-size: 13px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+    .bar-track { height: 6px; background: var(--bar-track); border-radius: 3px; overflow: hidden; }
+    .bar-fill {
+      height: 100%; border-radius: 3px; background: var(--green);
+      transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+    }
+    .bar-fill.amber { background: var(--amber); }
+    .bar-fill.long  { background: var(--red); }
+
+    /* ══ SCENARIO TOGGLE ═══════════════════════════════════════ */
+    .scenario-toggle { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .scenario-btn {
+      flex: 1; padding: 0.5rem 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 8px; color: var(--text-dim);
+      cursor: pointer; transition: all 0.2s; text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .scenario-btn:hover { color: var(--text-muted); }
+    .scenario-btn.active { background: var(--surface-2); border-color: var(--green); color: var(--green); }
+
+    /* ══ BESPOKE NOTE ══════════════════════════════════════════ */
+    .bespoke-note {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-left: 2px solid var(--amber);
+      border-radius: 0 8px 8px 0;
+      padding: 0.875rem 1rem;
+      font-size: 12px; color: var(--text-muted);
+      line-height: 1.65; margin-bottom: 1.75rem;
+    }
+
+    /* ══ SCIENCE STRIP ═════════════════════════════════════════ */
+    .science-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem; margin-bottom: 0.75rem; padding: 1rem;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 12px; box-shadow: var(--shadow);
+    }
+    .science-stat { text-align: center; }
+    .science-num { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--green); line-height: 1; }
+    .science-label { font-size: 10px; color: var(--text-dim); margin-top: 3px; line-height: 1.3; }
+
+    /* ══ COMPOUND NOTE ═════════════════════════════════════════ */
+    .compound-note {
+      background: var(--surface-2);
+      border: 0.5px solid var(--border-green);
+      border-radius: 10px; padding: 0.875rem 1.125rem;
+      margin-bottom: 2rem; font-size: 12px;
+      color: var(--text-muted); line-height: 1.65;
+    }
+    .compound-note strong { color: var(--green); }
+
+    /* ══ CTA BTN ═══════════════════════════════════════════════ */
+    .cta-btn {
+      width: 100%; padding: 1rem 1.5rem;
+      border-radius: 8px; background: var(--green); color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 500; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: opacity 0.2s, transform 0.1s;
+      text-decoration: none; letter-spacing: 0.01em;
+    }
+    [data-theme="dark"] .cta-btn { color: #000; }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .cta-btn:active { transform: translateY(0); }
+    .cta-btn-outline {
+      width: 100%; padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: opacity 0.2s, transform 0.1s;
+      text-decoration: none; letter-spacing: 0.01em; margin-top: 0.75rem;
+    }
+    .cta-btn-outline:hover { opacity: 0.8; transform: translateY(-1px); }
+
+    /* ══ METHODOLOGY ═══════════════════════════════════════════ */
+    .methodology-toggle {
+      font-size: 12px; color: var(--text-dim);
+      text-decoration: underline; cursor: pointer;
+      display: block; text-align: center; margin-top: 1rem;
+      background: none; border: none; font-family: inherit;
+    }
+    .methodology-toggle:hover { color: var(--text-muted); }
+    .methodology {
+      display: none; background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 10px; padding: 1.25rem; margin-top: 1rem;
+      font-size: 12px; color: var(--text-muted);
+      line-height: 1.75; box-shadow: var(--shadow);
+    }
+    .methodology p + p { margin-top: 0.75rem; }
+
+    /* ══ SOURCES ═══════════════════════════════════════════════ */
+    .sources { margin-top: 2rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); }
+    .sources-title { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    .source-item { font-size: 11px; color: var(--text-dim); line-height: 1.6; display: flex; gap: 8px; margin-bottom: 4px; }
+    .source-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); margin-top: 7px; flex-shrink: 0; }
+
+    /* ══ MODAL BASE ════════════════════════════════════════════ */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 500;
+      align-items: center; justify-content: center;
+      padding: 1.5rem; backdrop-filter: blur(4px);
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      max-width: 500px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    [data-theme="light"] .modal { box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 28px; height: 28px;
+      background: var(--pill-bg); border: none;
+      border-radius: 50%; cursor: pointer;
+      color: var(--text-muted); font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--slider-bg); }
+    .modal-eyebrow {
+      font-size: 10px; font-weight: 500; color: var(--green);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem;
+    }
+    .modal-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px; font-weight: 400; line-height: 1.25;
+      color: var(--text); margin-bottom: 0.5rem;
+    }
+    .modal-sub {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.6; margin-bottom: 1.5rem;
+    }
+
+    /* ══ FORM FIELDS ═══════════════════════════════════════════ */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .form-field { display: flex; flex-direction: column; gap: 5px; }
+    .form-label {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .form-input, .form-select {
+      background: var(--input-bg);
+      border: 0.5px solid var(--input-border);
+      border-radius: 8px; padding: 0.625rem 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; color: var(--input-text);
+      outline: none; width: 100%;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--green); }
+    .form-select {
+      -webkit-appearance: none; appearance: none;
+      background-image: var(--select-arrow);
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem; cursor: pointer;
+    }
+    .form-input::placeholder { color: var(--text-dim); }
+    .form-submit {
+      width: 100%; margin-top: 1rem;
+      padding: 0.875rem;
+      background: var(--green); color: #fff;
+      border: none; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    [data-theme="dark"] .form-submit { color: #000; }
+    .form-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+    .form-success {
+      text-align: center; padding: 1.5rem 0;
+    }
+    .form-success-icon {
+      font-size: 36px; margin-bottom: 0.75rem;
+    }
+    .form-success-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px; color: var(--text); margin-bottom: 0.5rem;
+    }
+    .form-success-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .form-privacy { font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 0.75rem; line-height: 1.5; }
+
+    /* ══ HACKS LIST ════════════════════════════════════════════ */
+    .hacks-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .hack-item {
+      display: flex; gap: 0.875rem; align-items: flex-start;
+      padding: 0.75rem; background: var(--surface-2);
+      border-radius: 10px; border: 0.5px solid var(--border-faint);
+    }
+    .hack-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px; color: var(--green);
+      line-height: 1; flex-shrink: 0; width: 22px; text-align: right;
+    }
+    .hack-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 2px; }
+    .hack-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ══ ROI ONE-PAGER PRINT STYLES ════════════════════════════ */
+    .onepager {
+      font-family: 'DM Sans', sans-serif;
+    }
+    .onepager-header {
+      background: var(--surface-2);
+      border: 0.5px solid var(--border-green);
+      border-radius: 12px; padding: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 1rem;
+    }
+    .onepager-wordmark {
+      font-family: 'DM Serif Display', serif;
+      font-size: 11px; letter-spacing: 0.14em;
+      color: var(--green); text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .onepager-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px; color: var(--text); line-height: 1.2;
+    }
+    .onepager-meta { font-size: 11px; color: var(--text-dim); text-align: right; line-height: 1.7; }
+    .onepager-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0.625rem; margin-bottom: 1rem;
+    }
+    .onepager-stat {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 10px; padding: 0.875rem 1rem;
+      box-shadow: var(--shadow);
+    }
+    .onepager-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+    .onepager-stat-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px; line-height: 1; font-variant-numeric: tabular-nums;
+    }
+    .onepager-stat-value.red   { color: var(--red); }
+    .onepager-stat-value.green { color: var(--green); }
+    .onepager-stat-sub { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+    .onepager-section { margin-bottom: 1rem; }
+    .onepager-section-title {
+      font-size: 10px; font-weight: 500; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 0.5rem; padding-bottom: 0.375rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .onepager-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline; padding: 0.4rem 0;
+      border-bottom: 0.5px solid var(--border-faint);
+      font-size: 12px; gap: 0.75rem;
+    }
+    .onepager-row:last-child { border-bottom: none; }
+    .onepager-row-label { color: var(--text-muted); }
+    .onepager-row-value { font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .onepager-row-value.green { color: var(--green); }
+    .onepager-row-value.red   { color: var(--red); }
+    .onepager-science {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem; margin-bottom: 1rem;
+    }
+    .onepager-sci-stat {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 8px; padding: 0.625rem;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .onepager-sci-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px; color: var(--green); line-height: 1;
+    }
+    .onepager-sci-label { font-size: 9px; color: var(--text-dim); margin-top: 2px; line-height: 1.3; }
+    .onepager-footer {
+      font-size: 9px; color: var(--text-dim); text-align: center;
+      padding-top: 0.75rem; border-top: 0.5px solid var(--border); line-height: 1.6;
+    }
+
+    /* ══ RESPONSIVE ════════════════════════════════════════════ */
+    @media (max-width: 440px) {
+      .tier-picker { grid-template-columns: 1fr; }
+      .roi-hero { grid-template-columns: 1fr; }
+      .science-strip { grid-template-columns: repeat(2, 1fr); }
+      .tab-btn { font-size: 12px; padding: 0.75rem 0.5rem; }
+      .theme-toggle { top: 0.875rem; right: 0.875rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .onepager-stats { grid-template-columns: 1fr 1fr; }
+      .onepager-science { grid-template-columns: repeat(2, 1fr); }
+      .onepager-header { flex-direction: column; }
+      .onepager-meta { text-align: left; }
+    }
+</style>
+
+
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    <span class="toggle-label" id="toggle-label">Light mode</span>
+  </button>
+
+  <header class="header">
+    <span class="wordmark">Syneurgy</span>
+    <h1 class="headline">Synchrony is the difference between<br><em class="green">teams that click</em> and <em class="red">teams that cost.</em></h1>
+    <p class="sub">See how much it's costing you.</p>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('cost', this)">Cost of Poor Synchrony</button>
+    <button class="tab-btn" onclick="switchTab('roi', this)">ROI Calculator</button>
+  </div>
+
+  <!-- ════════ TAB 1 — COST ════════ -->
+  <div id="tab-cost" class="tab-panel active">
+    <main class="calc-body">
+
+      <div class="input-group">
+        <label class="input-label" for="numTeams">Number of teams</label>
+        <div class="input-row">
+          <input type="range" id="numTeams" min="1" max="50" step="1" value="1" oninput="updateCost()" />
+          <span class="input-val" id="numTeamsVal">1 team</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="teamSize">People per team</label>
+        <div class="input-row">
+          <input type="range" id="teamSize" min="2" max="60" step="1" value="10" oninput="updateCost()" />
+          <span class="input-val" id="teamSizeVal">10 people</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="salary">Average annual salary per person</label>
+        <div class="input-row">
+          <input type="range" id="salary" min="40000" max="2000000" step="10000" value="100000" oninput="updateCost()" />
+          <span class="input-val" id="salaryVal">$100,000</span>
+        </div>
+      </div>
+
+      <div class="big-cards">
+        <div class="big-card primary">
+          <div class="big-card-body">
+            <div class="big-card-label">Annual cost of poor synchrony</div>
+            <div class="big-card-main red" id="totalCost">—</div>
+            <div class="big-card-sub">per year across your teams, conservatively</div>
+          </div>
+
+        </div>
+        <div class="big-card">
+          <div class="big-card-body">
+            <div class="big-card-label">Your synchrony upside</div>
+            <div class="big-card-main green" id="totalGain">—</div>
+            <div class="big-card-sub">recoverable value — visible in as little as 6 weeks*</div>
+          </div>
+
+        </div>
+      </div>
+      <p class="caveat-text">* Based on 6-week IRB study (n=67, 12 teams). Results reflect measurable improvement in synchrony, trust, safety, and performance within that period. Gains persist and compound as synchrony becomes practiced habit — teams don't revert to dysfunction they've already overcome.</p>
+
+      <div class="breakdown">
+        <div class="breakdown-header">Where You're Losing Money</div>
+        <div class="result-row">
+          <span class="result-label">Turnover cost<br><small style="color:var(--text-dim)">(22% attrition × $150K/departure — SHRM/BigTime)</small></span>
+          <span class="result-amount red" id="r1">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Wasted time &amp; coordination loss<br><small style="color:var(--text-dim)">(8 hrs/week per person — Asana Anatomy of Work; range 4.9–14 hrs across studies)</small></span>
+          <span class="result-amount red" id="r2">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Meeting &amp; rework waste<br><small style="color:var(--text-dim)">(50% unproductive meetings + 3% rework — HBR/PMI)</small></span>
+          <span class="result-amount red" id="r3">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Conflict &amp; misalignment drag<br><small style="color:var(--text-dim)">(2.8 hrs/week lost — CPP Global/SHRM)</small></span>
+          <span class="result-amount red" id="r4">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Churn from disengagement &amp; burnout<br><small style="color:var(--text-dim)">(voluntary exits beyond natural attrition — Gallup)</small></span>
+          <span class="result-amount red" id="r6">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Missed deadlines &amp; delivery overruns<br><small style="color:var(--text-dim)">(26.6% of projects delayed · $110K avg overrun — PMI/Deltek)</small></span>
+          <span class="result-amount red" id="r7">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Absenteeism from disengagement &amp; burnout<br><small style="color:var(--text-dim)">(disengaged workers take 37% more sick days — Gallup)</small></span>
+          <span class="result-amount red" id="r8">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Toxic culture virality &amp; "bad apple" effect<br><small style="color:var(--text-dim)">(30–40% performance degradation per bad actor — Felps, Mitchell &amp; Byington 2006)</small></span>
+          <span class="result-amount red" id="r9">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Underperformance from misalignment<br><small style="color:var(--text-dim)">(3 in 4 cross-functional teams underperform on key metrics — McKinsey/HBR)</small></span>
+          <span class="result-amount red" id="r10">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Failed &amp; abandoned projects<br><small style="color:var(--text-dim)">(19% of projects fail entirely · $65K avg sunk cost — Standish Group)</small></span>
+          <span class="result-amount red" id="r11">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Recoverable value (conservative 20%)<br><small style="color:var(--text-dim)">(McKinsey Global Institute — validated by Syneurgy IRB study)</small></span>
+          <span class="result-amount green" id="r5">—</span>
+        </div>
+      </div>
+
+
+<button class="methodology-toggle" onclick="toggleMethodology('methodology-cost')">How we calculated this</button>
+      <div class="methodology" id="methodology-cost">
+        <p>All figures use the conservative end of published research ranges, scaled to your team size and salary.</p>
+        <p><strong style="color:var(--text)">Turnover:</strong> Industry-standard 22% annual attrition. $150K per departure (SHRM/BigTime). Syneurgy's 26.51% trust improvement directly addresses the #1 and #2 reasons people quit.</p>
+        <p><strong style="color:var(--text)">Wasted time:</strong> Average knowledge worker wastes 14 hours/week on coordination overhead (Asana, Atlassian, Microsoft). Blended at $25/hr.</p>
+        <p><strong style="color:var(--text)">Meeting &amp; rework waste:</strong> HBR: 50% of meeting time is unproductive. PMI: 3–10% of labor is rework; we use 3% conservative.</p>
+        <p><strong style="color:var(--text)">Conflict drag:</strong> CPP Global and SHRM: 2.8 hrs/week on unproductive conflict; 40% purely destructive.</p>
+        <p><strong style="color:var(--text)">Recoverable value:</strong> McKinsey: improved collaboration raises productivity 20–25%. We use 20% (low end), validated by Syneurgy's 19% IRB performance improvement.</p>
+      </div>
+
+      <div class="sources">
+        <div class="sources-title">Sources</div>
+        <div class="source-item"><div class="source-dot"></div><span>SHRM / BigTime — $150K per knowledge worker departure</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>Asana / Atlassian / Microsoft — 14 hrs/week coordination waste</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>Harvard Business Review — 50% of meeting time unproductive</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>PMI Pulse of the Profession — rework costs 3–10% of labor</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>CPP Global / SHRM — 2.8 hrs/week lost to workplace conflict</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>McKinsey Global Institute — 20–25% productivity gain from collaboration</span></div>
+        <div class="source-item"><div class="source-dot"></div><span>Syneurgy IRB Study (n=67, 12 teams, 6 weeks) — 19% objective performance improvement</span></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ════════ TAB 2 — ROI ════════ -->
+  <div id="tab-roi" class="tab-panel">
+    <main class="calc-body">
+
+      <div class="science-strip">
+        <div class="science-stat"><div class="science-num">19%</div><div class="science-label">Performance improvement</div></div>
+        <div class="science-stat"><div class="science-num">26.5%</div><div class="science-label">Increase in mutual trust</div></div>
+        <div class="science-stat"><div class="science-num">41%</div><div class="science-label">Psychological safety gain</div></div>
+        <div class="science-stat"><div class="science-num">30.75%</div><div class="science-label">Team synchrony increase</div></div>
+      </div>
+      <p style="font-size:10px;color:var(--text-dim);text-align:center;margin-bottom:2rem">6-week IRB study · 67 participants · 12 teams · neuroscience-backed</p>
+
+      <div class="compound-note">
+        <strong>These are 6-week baselines — not ceilings.</strong> Synchrony is a skill. Teams that practice it build habits that persist and compound. These gains don't reset — organizations don't revert to dysfunction they've already overcome.
+      </div>
+
+      <span class="section-label">Step 1 — Select your plan</span>
+      <div class="tier-picker">
+        <div class="tier-card selected" onclick="selectTier(this)" data-tier="saas" data-price="9564">
+          <div class="tier-pill">SaaS</div>
+          <div class="tier-name">Self-Serve</div>
+          <div class="tier-price">$797<span style="font-size:11px;color:var(--text-dim);font-family:'DM Sans',sans-serif">/mo</span></div>
+          <div class="tier-note">$9,564/yr · Teams of 2–15 · Cancel anytime</div>
+        </div>
+        <div class="tier-card" onclick="selectTier(this)" data-tier="hightouch" data-price="29964">
+          <div class="tier-pill">Managed</div>
+          <div class="tier-name">High-Touch Annual</div>
+          <div class="tier-price">$2,497<span style="font-size:11px;color:var(--text-dim);font-family:'DM Sans',sans-serif">/mo</span></div>
+          <div class="tier-note">$29,964/yr · 1 CSM per 10 teams · 1 Coach per 12</div>
+        </div>
+        <div class="tier-card" onclick="selectTier(this)" data-tier="bespoke" data-price="175000">
+          <div class="tier-pill">Enterprise</div>
+          <div class="tier-name">Bespoke On-Prem</div>
+          <div class="tier-price">$175K<span style="font-size:11px;color:var(--text-dim);font-family:'DM Sans',sans-serif">+</span></div>
+          <div class="tier-note">Custom dashboards · Integrated workflows · On-prem</div>
+        </div>
+      </div>
+
+      <span class="section-label">Step 2 — ROI scenario</span>
+      <div class="scenario-toggle">
+        <button class="scenario-btn active" onclick="selectScenario(this, 'conservative')">Conservative</button>
+        <button class="scenario-btn" onclick="selectScenario(this, 'moderate')">Moderate</button>
+        <button class="scenario-btn" onclick="selectScenario(this, 'best')">High Performer</button>
+      </div>
+
+      <span class="section-label">Step 3 — Your team inputs</span>
+      <div class="carried-inputs">
+        <div class="carried-row">
+          <span class="carried-label">Teams</span>
+          <span class="carried-value" id="roi-carried-size">1 team · 10 people</span>
+        </div>
+        <div class="carried-row">
+          <span class="carried-label">Avg. salary</span>
+          <span class="carried-value" id="roi-carried-salary">$100,000</span>
+        </div>
+        <button class="carried-edit" onclick="switchTab('cost', document.querySelectorAll('.tab-btn')[0])">Edit ↩</button>
+      </div>
+
+      <div class="bespoke-note" id="bespoke-note" style="display:none">
+        Bespoke pricing starts at $175,000 and is scoped to your organization. ROI below uses the floor price — actual investment and returns will vary. Contact us for a tailored model.
+      </div>
+
+      <span class="section-label">Step 4 — Your ROI</span>
+      <div class="roi-hero">
+        <div class="roi-hero-card accent">
+          <div class="roi-hero-label">Net Year-1 Gain</div>
+          <div class="roi-hero-value green" id="roi-net-gain">—</div>
+          <div class="roi-hero-sub">after Syneurgy investment</div>
+        </div>
+        <div class="roi-hero-card">
+          <div class="roi-hero-label">Year-1 ROI</div>
+          <div class="roi-hero-value green" id="roi-pct">—</div>
+          <div class="roi-hero-sub">return on investment</div>
+        </div>
+      </div>
+
+      <div class="payback-bar-wrap">
+        <div class="payback-bar-label">
+          <span class="payback-bar-title">Payback Period</span>
+          <span class="payback-bar-months" id="roi-payback-label">—</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="roi-bar" style="width:2%"></div></div>
+      </div>
+
+      <div class="breakdown">
+        <div class="breakdown-header">ROI Breakdown — Value Recovered by Driver</div>
+        <div class="result-row">
+          <span class="result-label">Turnover reduction<br><small style="color:var(--text-dim)" id="roi-turnover-note">26% trust gain → 3pt attrition cut · lower rehiring costs</small></span>
+          <span class="result-amount green" id="roi-d1">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Time waste recovery<br><small style="color:var(--text-dim)" id="roi-time-note">20% coordination overhead recovered</small></span>
+          <span class="result-amount green" id="roi-d2">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Meeting &amp; rework improvement<br><small style="color:var(--text-dim)" id="roi-meeting-note">30% better meetings · 40% less rework</small></span>
+          <span class="result-amount green" id="roi-d3">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Conflict &amp; misalignment reduction<br><small style="color:var(--text-dim)" id="roi-conflict-note">50% less destructive conflict</small></span>
+          <span class="result-amount green" id="roi-d4">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Churn reduction from improved engagement<br><small style="color:var(--text-dim)" id="roi-churn-note">Fewer burnout exits · lower rehiring &amp; ramp costs</small></span>
+          <span class="result-amount green" id="roi-d5">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Missed deadline &amp; delivery improvement<br><small style="color:var(--text-dim)" id="roi-deadline-note">Fewer overruns · faster delivery · less penalty cost</small></span>
+          <span class="result-amount green" id="roi-d6">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Absenteeism reduction<br><small style="color:var(--text-dim)" id="roi-absenteeism-note">Fewer sick days · more present &amp; engaged</small></span>
+          <span class="result-amount green" id="roi-d7">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Toxic culture &amp; bad apple prevention<br><small style="color:var(--text-dim)" id="roi-toxic-note">Early conflict intervention · protects team health</small></span>
+          <span class="result-amount green" id="roi-d8">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Underperformance recovery<br><small style="color:var(--text-dim)" id="roi-underperf-note">Teams move toward their actual potential</small></span>
+          <span class="result-amount green" id="roi-d9">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Failed project reduction<br><small style="color:var(--text-dim)" id="roi-failedproj-note">Better alignment · fewer abandoned initiatives</small></span>
+          <span class="result-amount green" id="roi-d10">—</span>
+        </div>
+        <div class="result-row" style="border-top:0.5px solid var(--border);padding-top:1rem">
+          <span class="result-label" style="color:var(--text);font-weight:500">Total value recovered</span>
+          <span class="result-amount green" id="roi-total-value">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Syneurgy annual investment</span>
+          <span class="result-amount" id="roi-investment">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label" style="color:var(--text);font-weight:500">Net Year-1 gain</span>
+          <span class="result-amount green" id="roi-net-gain-2">—</span>
+        </div>
+      </div>
+
+
+      <button class="methodology-toggle" onclick="toggleMethodology('methodology-roi')">How ROI is calculated</button>
+      <div class="methodology" id="methodology-roi">
+        <p>ROI is calculated from Syneurgy's five validated value drivers, grounded in our 6-week IRB study outcomes (19% performance improvement, 26.51% trust gain, 41% psychological safety increase).</p>
+        <p><strong style="color:var(--text)">Scenario framing:</strong> Conservative and Moderate use the study averages as a floor. High Performer reflects what teams that really committed to synchrony achieved — the IRB study reported averages, and some teams exceeded them significantly. Collaborative task success improved by as much as 80% in high-performing teams. The averages aren't the ceiling.</p>
+        <p><strong style="color:var(--text)">Turnover reduction:</strong> Conservative = 3pt attrition cut. Moderate = 5pt. High Performer = 7pt. Uses $150K/departure (SHRM/BigTime). Lower attrition also means lower rehiring cost and faster ramp-to-productive for remaining roles.</p>
+        <p><strong style="color:var(--text)">Time waste:</strong> 14 hrs/week per person. Conservative recovers 20%; moderate 30%; High Performer 40%. At $25/hr blended.</p>
+        <p><strong style="color:var(--text)">Meeting &amp; rework:</strong> Conservative: 30% meeting improvement + 40% less rework. Moderate: 35%/50%. High Performer: 40%/60%.</p>
+        <p><strong style="color:var(--text)">Conflict:</strong> Conservative 50% reduction in destructive conflict. Moderate 60%. High Performer 75%. Some teams eliminated it entirely.</p>
+        <p><strong style="color:var(--text)">Churn from disengagement:</strong> Separate from base attrition — this is the excess turnover driven by burnout and active disengagement. Gallup: 18% of the workforce is actively disengaged at significant cost. Modeled at 5% of payroll conservative. Recovery scales by scenario.</p>
+        <p><strong style="color:var(--text)">Missed deadlines:</strong> PMI and Deltek data: 26.6% of projects are delayed, averaging $110K in overrun costs per delayed project. Modeled at 0.5 delayed projects per team per year conservative. Better synchrony means better coordination, fewer handoff failures, and faster decision cycles — the direct causes of most delays.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ════════ MODAL: 10 FREE HACKS ════════ -->
+  <div class="modal-backdrop" id="hacks-modal" onclick="closeOnBackdrop(event, 'hacks-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('hacks-modal')">✕</button>
+      <div id="hacks-form-view">
+        <div class="modal-eyebrow">Free resource</div>
+        <h2 class="modal-title">10 Ways to Get Your Teams in Sync</h2>
+        <p class="modal-sub">Enter your work email and we'll send all 10 hacks — plus a copy of <em>The Synchrony Advantage</em> study.</p>
+        <div class="form-grid single">
+          <div class="form-field">
+            <label class="form-label">Full name</label>
+            <input class="form-input" id="hacks-name" type="text" placeholder="Your name" />
+          </div>
+        </div>
+        <div class="form-grid single">
+          <div class="form-field">
+            <label class="form-label">Work email</label>
+            <input class="form-input" id="hacks-email" type="email" placeholder="you@company.com" />
+          </div>
+        </div>
+        <button class="form-submit" onclick="submitHacks()">Send me the hacks →</button>
+        <p class="form-privacy">No spam. Unsubscribe anytime. We don't sell your data.</p>
+      </div>
+      <div id="hacks-success-view" style="display:none">
+        <div class="form-success">
+          <div class="form-success-icon">✓</div>
+          <div class="form-success-title">On its way.</div>
+          <p class="form-success-sub">Check your inbox for the 10 hacks and <em>The Synchrony Advantage</em> study. While you're here — here's a quick preview:</p>
+        </div>
+        <ol class="hacks-list">
+          <li class="hack-item"><span class="hack-num">1</span><div><div class="hack-title">Start every meeting with a 60-second check-in</div><div class="hack-desc">"How am I showing up today?" Shared state = faster sync.</div></div></li>
+          <li class="hack-item"><span class="hack-num">2</span><div><div class="hack-title">Name the decision before you discuss it</div><div class="hack-desc">Write at the top of every agenda: "The decision we need to make is ___." Eliminates 40% of meeting drift.</div></div></li>
+          <li class="hack-item"><span class="hack-num">3</span><div><div class="hack-title">Close every meeting with one action per person</div><div class="hack-desc">One specific commitment, one owner, one deadline. Read it back out loud.</div></div></li>
+          <li class="hack-item"><span class="hack-num">4</span><div><div class="hack-title">Rotate who speaks first</div><div class="hack-desc">Whoever goes first anchors the group. Changing the order changes the outcome.</div></div></li>
+          <li class="hack-item"><span class="hack-num">5</span><div><div class="hack-title">Use "plus one" acknowledgment</div><div class="hack-desc">"I heard you say X — plus one thing I'd add..." Reduces misalignment instantly.</div></div></li>
+          <li class="hack-item"><span class="hack-num">6</span><div><div class="hack-title">Create a shared friction log</div><div class="hack-desc">A running doc: "This slowed me down today." Review weekly. Fix the top item.</div></div></li>
+          <li class="hack-item"><span class="hack-num">7</span><div><div class="hack-title">Set a weekly 15-minute blockers-only standup</div><div class="hack-desc">No status updates — only what's stuck and who can help. Hard cap at 15 min.</div></div></li>
+          <li class="hack-item"><span class="hack-num">8</span><div><div class="hack-title">Separate idea generation from evaluation</div><div class="hack-desc">Never critique in the same session you generate. One meeting to open, one to close.</div></div></li>
+          <li class="hack-item"><span class="hack-num">9</span><div><div class="hack-title">Ask "what do you need from me?" once a week</div><div class="hack-desc">Each manager to each direct report. "A decision by Thursday" not "support."</div></div></li>
+          <li class="hack-item"><span class="hack-num">10</span><div><div class="hack-title">Celebrate a synchrony win out loud</div><div class="hack-desc">"We made that call in 10 minutes because we trusted each other." Culture compounds when you name it.</div></div></li>
+        </ol>
+        <button class="cta-btn" onclick="closeModal('hacks-modal'); showSignupModal()">Ready for the full system? Sign up free →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ MODAL: SIGN UP ════════ -->
+  <div class="modal-backdrop" id="signup-modal" onclick="closeOnBackdrop(event, 'signup-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
+      <div id="signup-form-view">
+        <div class="modal-eyebrow">Create your account</div>
+        <h2 class="modal-title">Start measuring what matters</h2>
+        <p class="modal-sub">Your account details. Billing is handled securely through Stripe at checkout.</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Full name</label>
+            <input class="form-input" id="signup-name" type="text" placeholder="Jane Smith" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Work email</label>
+            <input class="form-input" id="signup-email" type="email" placeholder="you@company.com" />
+          </div>
+        </div>
+        <button class="form-submit" onclick="submitSignup()">Continue to checkout →</button>
+        <p class="form-privacy">Billing handled by Stripe. Your payment info is never stored by Syneurgy.</p>
+      </div>
+      <div id="signup-success-view" style="display:none">
+        <div class="form-success">
+          <div class="form-success-icon">✓</div>
+          <div class="form-success-title">Account created.</div>
+          <p class="form-success-sub">Taking you to checkout now. You'll be measuring team synchrony within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ MODAL: ROI ONE-PAGER ════════ -->
+  <div class="modal-backdrop" id="onepager-modal" onclick="closeOnBackdrop(event, 'onepager-modal')">
+    <div class="modal" style="max-width:560px">
+      <button class="modal-close" onclick="closeModal('onepager-modal')">✕</button>
+
+      <div id="onepager-form-view">
+        <div class="modal-eyebrow">Executive ROI Report</div>
+        <h2 class="modal-title">Get your branded one-pager</h2>
+        <p class="modal-sub">We'll send a personalized ROI summary + <em>The Synchrony Advantage</em> study to your email and phone.</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Full name</label>
+            <input class="form-input" id="op-name" type="text" placeholder="Jane Smith" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Work email</label>
+            <input class="form-input" id="op-email" type="email" placeholder="you@company.com" />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Company</label>
+            <input class="form-input" id="op-company" type="text" placeholder="Acme Corp" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Mobile number</label>
+            <input class="form-input" id="op-mobile" type="tel" placeholder="+1 (555) 000-0000" />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">People at your company</label>
+            <select class="form-select" id="op-size">
+              <option value="">Select range</option>
+              <option>1–10</option>
+              <option>11–50</option>
+              <option>51–200</option>
+              <option>201–500</option>
+              <option>501–1,000</option>
+              <option>1,001–5,000</option>
+              <option>5,000+</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Industry</label>
+            <select class="form-select" id="op-industry">
+              <option value="">Select industry</option>
+              <option>Consulting</option>
+              <option>Technology / SaaS</option>
+              <option>Financial Services</option>
+              <option>Healthcare</option>
+              <option>Private Equity / Venture Capital</option>
+              <option>Legal</option>
+              <option>Marketing / Advertising</option>
+              <option>Media &amp; Entertainment</option>
+              <option>Manufacturing</option>
+              <option>Retail &amp; E-commerce</option>
+              <option>Real Estate</option>
+              <option>Education</option>
+              <option>Government / Non-Profit</option>
+              <option>Energy &amp; Utilities</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <button class="form-submit" onclick="submitOnePager()">Send my ROI report →</button>
+        <p class="form-privacy">Your information is used only to personalize and deliver your report. We don't sell your data.</p>
+      </div>
+
+      <div id="onepager-report-view" style="display:none">
+        <div class="modal-eyebrow" style="margin-bottom:1rem">Your Executive ROI Report</div>
+        <div class="onepager" id="onepager-content">
+          <!-- Populated by JS -->
+        </div>
+        <button class="cta-btn" onclick="window.print()" style="margin-top:1rem">Print / Save as PDF</button>
+        <button class="cta-btn-outline" onclick="closeModal('onepager-modal'); showSignupModal()">Start with Syneurgy →</button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+<script>
+
+    /* ══ SCENARIOS ══════════════════════════════════════════════ */
+    const SCENARIOS = {
+      conservative: {
+        turnoverPts:           3,
+        timeRecovery:          0.20,
+        meetingImprovement:    0.30,
+        reworkReduction:       0.40,
+        conflictReduction:     0.50,
+        churnReduction:        0.10,
+        deadlineImprovement:   0.10,
+        absenteeismReduction:  0.20,
+        toxicCultureReduction: 0.25,
+        underperformanceRecovery: 0.15,
+        failedProjectReduction:0.15,
+        turnoverNote:  '26% trust gain → 3pt attrition cut · lower rehiring costs',
+        timeNote:      '20% coordination overhead recovered',
+        meetingNote:   '30% better meetings · 40% less rework · fewer missed deadlines',
+        conflictNote:  '50% less destructive conflict · lower churn risk',
+        label: 'Conservative'
+      },
+      moderate: {
+        turnoverPts:           5,
+        timeRecovery:          0.30,
+        meetingImprovement:    0.35,
+        reworkReduction:       0.50,
+        conflictReduction:     0.60,
+        churnReduction:        0.20,
+        deadlineImprovement:   0.20,
+        absenteeismReduction:  0.35,
+        toxicCultureReduction: 0.45,
+        underperformanceRecovery: 0.25,
+        failedProjectReduction:0.30,
+        turnoverNote:  '26% trust + 41% safety → 5pt attrition cut · faster rehire-to-productive',
+        timeNote:      '30% coordination overhead recovered',
+        meetingNote:   '35% better meetings · 50% less rework · on-time delivery improves',
+        conflictNote:  '60% less destructive conflict · reduced churn from burnout',
+        label: 'Moderate'
+      },
+      best: {
+        turnoverPts:           7,
+        timeRecovery:          0.40,
+        meetingImprovement:    0.40,
+        reworkReduction:       0.60,
+        conflictReduction:     0.75,
+        churnReduction:        0.35,
+        deadlineImprovement:   0.35,
+        absenteeismReduction:  0.55,
+        toxicCultureReduction: 0.70,
+        underperformanceRecovery: 0.40,
+        failedProjectReduction:0.50,
+        turnoverNote:  'High performers: synchrony cut attrition 7+ pts — some teams eliminated churn entirely',
+        timeNote:      '40% coordination overhead recovered — high-sync teams move measurably faster',
+        meetingNote:   '40% better meetings · 60% less rework · some teams hit 80% gain on collaborative tasks',
+        conflictNote:  '75% less destructive conflict — some high-performer teams eliminated it entirely',
+        label: 'High Performer'
+      }
+    };
+
+    let currentScenario = 'conservative';
+    let currentTier = { tier: 'saas', price: 9564 };
+
+    /* ══ UTILS ══════════════════════════════════════════════════ */
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+    function fmtX(n) {
+      if (n >= 100) return Math.round(n) + 'x';
+      if (n >= 10)  return n.toFixed(1) + 'x';
+      return n.toFixed(2) + 'x';
+    }
+    function fmtSalary(v) {
+      if (v >= 2000000) return '$2M+';
+      if (v >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+      if (v >= 1000)    return '$' + Math.round(v/1000) + 'K';
+      return '$' + v.toLocaleString('en-US');
+    }
+
+    /* ══ THEME ══════════════════════════════════════════════════ */
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('toggle-label').textContent = isDark ? 'Dark mode' : 'Light mode';
+    }
+
+    /* ══ TAB SWITCHING ══════════════════════════════════════════ */
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+      if (id === 'roi') updateROI();
+    }
+
+    /* ══ TIER ═══════════════════════════════════════════════════ */
+    function selectTier(el) {
+      document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      currentTier = { tier: el.dataset.tier, price: parseInt(el.dataset.price) };
+      document.getElementById('bespoke-note').style.display = currentTier.tier === 'bespoke' ? 'block' : 'none';
+      updateROI();
+    }
+
+    /* ══ SCENARIO ═══════════════════════════════════════════════ */
+    function selectScenario(btn, scenario) {
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentScenario = scenario;
+      updateROI();
+    }
+
+    /* ══ CORE MATH ══════════════════════════════════════════════
+       All drivers grounded in published research.
+       Bespoke tier is a flat organizational fee — NOT per-team.
+       SaaS and High-Touch scale per team (monthly subscription model).
+    ══ */
+    function calcDrivers(teams, n, s) {
+      const totalPeople = teams * n;
+      const payroll     = totalPeople * s;
+
+      // D1 — Turnover tax
+      // 22% annual attrition × $150K per departure (SHRM, BigTime)
+      // Includes: recruiting $15K + onboarding $25K + productivity gap $30K
+      //           + knowledge loss $40K + team disruption $40K
+      const d1 = (totalPeople * 0.22) * 150000;
+
+      // D2 — Coordination & time waste
+      // Asana 2023 Anatomy of Work: workers estimate saving 4.9 hrs/wk with better processes;
+      // 58% of the workday spent on coordination overhead. Earlier Asana reports cited up to
+      // 14 hrs/wk. We use 8 hrs/wk as a defensible midpoint across the research range.
+      const d2 = totalPeople * 8 * 52 * 25;
+
+      // D3 — Meeting waste + rework
+      // 50% of meeting time unproductive (HBR); 3% of payroll is rework (PMI low end)
+      const meetingWaste = totalPeople * 10 * 52 * 0.50 * 25;
+      const reworkCost   = payroll * 0.03;
+      const d3           = meetingWaste + reworkCost;
+
+      // D4 — Conflict & misalignment drag
+      // 2.8 hrs/week on conflict (CPP Global); 40% purely destructive (SHRM)
+      const d4 = totalPeople * 2.8 * 52 * 0.40 * 25;
+
+      // D5 — Disengagement churn (excess, beyond D1 natural attrition)
+      // Gallup: 18% of workforce actively disengaged at 34% of salary cost
+      // We model incremental burnout-exit risk at 5% of payroll (conservative)
+      const d5 = payroll * 0.05;
+
+      // D6 — Missed deadlines & delivery failure
+      // PMI/Deltek: 26.6% projects delayed, avg $110K overrun per delayed project
+      // Conservative: 0.5 delayed projects per team per year
+      const d6 = teams * 0.5 * 110000;
+
+      // D7 — Absenteeism from disengagement & burnout
+      // Gallup: disengaged workers take 37% more sick days = ~8 extra days/yr
+      // Affecting ~25% of workforce (disengaged + partially disengaged cohort)
+      // Cost: extra sick days × daily rate ($salary / 250 workdays)
+      const d7 = (totalPeople * 0.25) * 8 * (s / 250);
+
+      // D8 — Toxic culture virality ("one bad apple" effect)
+      // Felps, Mitchell & Byington (2006), Research in Organizational Behavior Vol.27:
+      // one toxic team member degrades group performance by 30–40% (lab study).
+      // NOTE: 54% quit rate claim removed — not verified in source paper.
+      // We model conservatively: 1 toxic-dynamic event per 4 teams per year.
+      // Each event cost ~$75K (modeled estimate: lost productivity + management time).
+      const d8 = (teams / 4) * 75000;
+
+      // D9 — Underperformance from misalignment (the invisible tax)
+      // McKinsey (citing Tabrizi/HBR 2015): 3 in 4 cross-functional teams underperform
+      // on key metrics. NOTE: "65–70% of potential" figure removed — not traceable to source.
+      // We model the output gap conservatively at 5% of payroll (reduced from 8%).
+      const d9 = payroll * 0.05;
+
+      // D10 — Failed or abandoned projects (not the same as delayed projects)
+      // Standish Group CHAOS Report: 19% of projects fail entirely; 52% challenged.
+      // We model outright project failures: avg $65K sunk cost per failed project
+      // Conservative: 0.3 failed projects per team per year
+      const d10 = teams * 0.3 * 65000;
+
+      const total       = d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9 + d10;
+      const recoverable = total * 0.20;
+      return {
+        d1, d2, d3, d4, d5, d6, d7, d8, d9, d10,
+        total, recoverable, meetingWaste, reworkCost, payroll, totalPeople
+      };
+    }
+
+    /* ══ PRICE HELPER ════════════════════════════════════════════
+       Bespoke is a flat organizational fee — never multiplied by team count.
+       SaaS and High-Touch are per-team subscriptions — scale with team count.
+    ══ */
+    function calcPrice(tier, price, teams) {
+      if (tier === 'bespoke') return price; // flat fee
+      return price * teams;                 // per-team subscription
+    }
+
+    /* ══ COST TAB ═══════════════════════════════════════════════ */
+    function updateCost() {
+      const teams = parseInt(document.getElementById('numTeams').value);
+      const n     = parseInt(document.getElementById('teamSize').value);
+      const s     = parseInt(document.getElementById('salary').value);
+      const { d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, total, recoverable } = calcDrivers(teams, n, s);
+
+      document.getElementById('numTeamsVal').textContent = teams === 1 ? '1 team' : teams + ' teams';
+      document.getElementById('teamSizeVal').textContent = n + ' people';
+      document.getElementById('salaryVal').textContent   = fmtSalary(s);
+      document.getElementById('totalCost').textContent   = fmt(total);
+      document.getElementById('totalGain').textContent   = fmt(recoverable);
+      document.getElementById('r1').textContent  = fmt(d1);
+      document.getElementById('r2').textContent  = fmt(d2);
+      document.getElementById('r3').textContent  = fmt(d3);
+      document.getElementById('r4').textContent  = fmt(d4);
+      document.getElementById('r5').textContent  = fmt(recoverable);
+      document.getElementById('r6').textContent  = fmt(d5);
+      document.getElementById('r7').textContent  = fmt(d6);
+      document.getElementById('r8').textContent  = fmt(d7);
+      document.getElementById('r9').textContent  = fmt(d8);
+      document.getElementById('r10').textContent = fmt(d9);
+      document.getElementById('r11').textContent = fmt(d10);
+
+      const sizeLabel = teams === 1 ? n + ' people' : teams + ' teams × ' + n;
+      document.getElementById('roi-carried-size').textContent   = sizeLabel;
+      document.getElementById('roi-carried-salary').textContent = fmtSalary(s);
+    }
+
+    /* ══ ROI TAB ════════════════════════════════════════════════ */
+    function updateROI() {
+      const teams = parseInt(document.getElementById('numTeams').value);
+      const n     = parseInt(document.getElementById('teamSize').value);
+      const s     = parseInt(document.getElementById('salary').value);
+      const { d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, meetingWaste, reworkCost } = calcDrivers(teams, n, s);
+
+      const sc    = SCENARIOS[currentScenario];
+      const price = calcPrice(currentTier.tier, currentTier.price, teams);
+
+      const sizeLabel = teams === 1 ? n + ' people' : teams + ' teams × ' + n;
+      document.getElementById('roi-carried-size').textContent   = sizeLabel;
+      document.getElementById('roi-carried-salary').textContent = fmtSalary(s);
+
+      const roi_d1  = d1  * (sc.turnoverPts / 22);
+      const roi_d2  = d2  * sc.timeRecovery;
+      const roi_d3  = (meetingWaste * sc.meetingImprovement) + (reworkCost * sc.reworkReduction);
+      const roi_d4  = d4  * sc.conflictReduction;
+      const roi_d5  = d5  * sc.churnReduction;
+      const roi_d6  = d6  * sc.deadlineImprovement;
+      const roi_d7  = d7  * sc.absenteeismReduction;
+      const roi_d8  = d8  * sc.toxicCultureReduction;
+      const roi_d9  = d9  * sc.underperformanceRecovery;
+      const roi_d10 = d10 * sc.failedProjectReduction;
+
+      const totalValue = roi_d1 + roi_d2 + roi_d3 + roi_d4 + roi_d5 +
+                         roi_d6 + roi_d7 + roi_d8 + roi_d9 + roi_d10;
+      const netGain    = totalValue - price;
+      const roiMulti   = totalValue / price;
+
+      const monthlyValue  = totalValue / 12;
+      const paybackMonths = monthlyValue > 0 ? price / monthlyValue : Infinity;
+
+      let paybackStr;
+      if (!isFinite(paybackMonths))  { paybackStr = 'N/A'; }
+      else if (paybackMonths < 1)    { paybackStr = Math.round(paybackMonths * 30) + ' days'; }
+      else if (paybackMonths < 12)   { paybackStr = paybackMonths.toFixed(1) + ' months'; }
+      else                           { paybackStr = (paybackMonths / 12).toFixed(1) + ' years'; }
+
+      const barPct = isFinite(paybackMonths) ? Math.min(100, Math.max(1, (paybackMonths / 24) * 100)) : 100;
+      const barEl  = document.getElementById('roi-bar');
+      barEl.style.width = barPct + '%';
+      barEl.className   = 'bar-fill' + (paybackMonths <= 6 ? '' : paybackMonths <= 12 ? ' amber' : ' long');
+      document.getElementById('roi-payback-label').textContent = paybackStr;
+
+      const netFmt    = netGain >= 0 ? fmt(netGain) : '–' + fmt(Math.abs(netGain));
+      const netGainEl = document.getElementById('roi-net-gain');
+      netGainEl.textContent = netFmt;
+      netGainEl.className   = 'roi-hero-value ' + (netGain >= 0 ? 'green' : 'red');
+
+      const roiEl = document.getElementById('roi-pct');
+      roiEl.textContent = fmtX(roiMulti);
+      roiEl.className   = 'roi-hero-value ' + (roiMulti >= 1 ? 'green' : roiMulti >= 0.5 ? 'amber' : 'red');
+
+      document.getElementById('roi-d1').textContent          = fmt(roi_d1);
+      document.getElementById('roi-d2').textContent          = fmt(roi_d2);
+      document.getElementById('roi-d3').textContent          = fmt(roi_d3);
+      document.getElementById('roi-d4').textContent          = fmt(roi_d4);
+      document.getElementById('roi-d5').textContent          = fmt(roi_d5);
+      document.getElementById('roi-d6').textContent          = fmt(roi_d6);
+      document.getElementById('roi-d7').textContent          = fmt(roi_d7);
+      document.getElementById('roi-d8').textContent          = fmt(roi_d8);
+      document.getElementById('roi-d9').textContent          = fmt(roi_d9);
+      document.getElementById('roi-d10').textContent         = fmt(roi_d10);
+      document.getElementById('roi-total-value').textContent = fmt(totalValue);
+      document.getElementById('roi-investment').textContent  =
+        currentTier.tier === 'bespoke' ? '$175,000 (flat annual)' : fmt(price);
+
+      const ng2El = document.getElementById('roi-net-gain-2');
+      ng2El.textContent = netFmt;
+      ng2El.className   = 'result-amount ' + (netGain >= 0 ? 'green' : 'red');
+
+      document.getElementById('roi-turnover-note').textContent   = sc.turnoverNote;
+      document.getElementById('roi-time-note').textContent        = sc.timeNote;
+      document.getElementById('roi-meeting-note').textContent     = sc.meetingNote;
+      document.getElementById('roi-conflict-note').textContent    = sc.conflictNote;
+      document.getElementById('roi-churn-note').textContent       = sc.churnReduction * 100 + '% of disengagement-driven churn costs recovered';
+      document.getElementById('roi-deadline-note').textContent    = sc.deadlineImprovement * 100 + '% of missed deadline overrun costs recovered';
+      document.getElementById('roi-absenteeism-note').textContent = sc.absenteeismReduction * 100 + '% of absenteeism cost recovered · engaged teams show up';
+      document.getElementById('roi-toxic-note').textContent       = sc.toxicCultureReduction * 100 + '% of toxic culture & bad apple costs prevented';
+      document.getElementById('roi-underperf-note').textContent   = sc.underperformanceRecovery * 100 + '% of misalignment underperformance recovered';
+      document.getElementById('roi-failedproj-note').textContent  = sc.failedProjectReduction * 100 + '% of failed project sunk costs prevented';
+    }
+
+    /* ══ MODAL HELPERS ══════════════════════════════════════════ */
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function closeOnBackdrop(e, id) {
+      if (e.target === document.getElementById(id)) closeModal(id);
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        ['hacks-modal','signup-modal','onepager-modal'].forEach(id => closeModal(id));
+      }
+    });
+
+    /* ══ HACKS MODAL ════════════════════════════════════════════ */
+    function showHacksModal() { openModal('hacks-modal'); }
+    function submitHacks() {
+      const name  = document.getElementById('hacks-name').value.trim();
+      const email = document.getElementById('hacks-email').value.trim();
+      if (!name || !email) { alert('Please enter your name and email.'); return; }
+      // TODO: wire to your email provider (e.g. POST to /api/hacks-signup)
+      document.getElementById('hacks-form-view').style.display  = 'none';
+      document.getElementById('hacks-success-view').style.display = 'block';
+    }
+
+    /* ══ SIGNUP MODAL ═══════════════════════════════════════════ */
+    function showSignupModal() { openModal('signup-modal'); }
+    function submitSignup() {
+      const name  = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      if (!name || !email) { alert('Please enter your name and email.'); return; }
+      // TODO: POST to your auth/account creation endpoint, then redirect to Stripe checkout
+      document.getElementById('signup-form-view').style.display  = 'none';
+      document.getElementById('signup-success-view').style.display = 'block';
+      setTimeout(() => {
+        window.open('https://syneurgy.com/checkout', '_blank');
+      }, 1200);
+    }
+
+    /* ══ ONE-PAGER MODAL ════════════════════════════════════════ */
+    function showOnePagerModal() { openModal('onepager-modal'); }
+
+    function submitOnePager() {
+      const name     = document.getElementById('op-name').value.trim();
+      const email    = document.getElementById('op-email').value.trim();
+      const company  = document.getElementById('op-company').value.trim();
+      const mobile   = document.getElementById('op-mobile').value.trim();
+      const size     = document.getElementById('op-size').value;
+      const industry = document.getElementById('op-industry').value;
+
+      if (!name || !email) { alert('Name and email are required.'); return; }
+
+      // TODO: POST lead data to your CRM/email provider
+      // fetch('/api/roi-report', { method:'POST', body: JSON.stringify({name,email,company,mobile,size,industry,...getCalcSnapshot()}) })
+
+      document.getElementById('onepager-form-view').style.display   = 'none';
+      document.getElementById('onepager-report-view').style.display = 'block';
+      renderOnePager(name, company, industry);
+    }
+
+    function getCalcSnapshot() {
+      const teams = parseInt(document.getElementById('numTeams').value);
+      const n     = parseInt(document.getElementById('teamSize').value);
+      const s     = parseInt(document.getElementById('salary').value);
+      const sc    = SCENARIOS[currentScenario];
+      const { d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, total, recoverable, meetingWaste, reworkCost } = calcDrivers(teams, n, s);
+      const price    = calcPrice(currentTier.tier, currentTier.price, teams);
+      const roi_d1   = d1  * (sc.turnoverPts / 22);
+      const roi_d2   = d2  * sc.timeRecovery;
+      const roi_d3   = (meetingWaste * sc.meetingImprovement) + (reworkCost * sc.reworkReduction);
+      const roi_d4   = d4  * sc.conflictReduction;
+      const roi_d5   = d5  * sc.churnReduction;
+      const roi_d6   = d6  * sc.deadlineImprovement;
+      const roi_d7   = d7  * sc.absenteeismReduction;
+      const roi_d8   = d8  * sc.toxicCultureReduction;
+      const roi_d9   = d9  * sc.underperformanceRecovery;
+      const roi_d10  = d10 * sc.failedProjectReduction;
+      const totalVal = roi_d1 + roi_d2 + roi_d3 + roi_d4 + roi_d5 +
+                       roi_d6 + roi_d7 + roi_d8 + roi_d9 + roi_d10;
+      const netGain  = totalVal - price;
+      const roiMulti = totalVal / price;
+      const payback  = totalVal / 12 > 0 ? (price / (totalVal / 12)) : Infinity;
+      return {
+        teams, n, s, total, recoverable,
+        d1, d2, d3, d4, d5, d6, d7, d8, d9, d10,
+        roi_d1, roi_d2, roi_d3, roi_d4, roi_d5,
+        roi_d6, roi_d7, roi_d8, roi_d9, roi_d10,
+        totalVal, netGain, roiMulti, payback, price, sc: currentScenario
+      };
+    }
+
+    function renderOnePager(name, company, industry) {
+      const snap    = getCalcSnapshot();
+      const date    = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+      const tierLabel = { saas: 'Self-Serve ($797/mo)', hightouch: 'High-Touch Annual ($2,497/mo)', bespoke: 'Bespoke On-Prem ($175K+)' }[currentTier.tier];
+      const scenLabel = { conservative: 'Conservative', moderate: 'Moderate', best: 'High Performer' }[snap.sc];
+
+      let paybackStr;
+      if (!isFinite(snap.payback))    { paybackStr = 'N/A'; }
+      else if (snap.payback < 1)      { paybackStr = Math.round(snap.payback * 30) + ' days'; }
+      else if (snap.payback < 12)     { paybackStr = snap.payback.toFixed(1) + ' months'; }
+      else                            { paybackStr = (snap.payback / 12).toFixed(1) + ' years'; }
+
+      document.getElementById('onepager-content').innerHTML = `
+        <div class="onepager-header">
+          <div>
+            <div class="onepager-wordmark">Syneurgy</div>
+            <div class="onepager-title">Executive ROI Report${company ? '<br><span style="font-size:14px;color:var(--text-muted)">' + company + '</span>' : ''}</div>
+          </div>
+          <div class="onepager-meta">
+            Prepared for ${name}<br>
+            ${industry || ''}<br>
+            ${date}<br>
+            Scenario: ${scenLabel}
+          </div>
+        </div>
+
+        <div class="onepager-stats">
+          <div class="onepager-stat">
+            <div class="onepager-stat-label">Annual Synchrony Cost</div>
+            <div class="onepager-stat-value red">${fmt(snap.total)}</div>
+            <div class="onepager-stat-sub">${snap.teams} team${snap.teams>1?'s':''} · ${snap.n} people · ${fmtSalary(snap.s)} avg</div>
+          </div>
+          <div class="onepager-stat">
+            <div class="onepager-stat-label">Net Year-1 Gain</div>
+            <div class="onepager-stat-value green">${fmt(snap.netGain)}</div>
+            <div class="onepager-stat-sub">after ${tierLabel}</div>
+          </div>
+          <div class="onepager-stat">
+            <div class="onepager-stat-label">Year-1 ROI</div>
+            <div class="onepager-stat-value green">${fmtX(snap.roiMulti)}</div>
+            <div class="onepager-stat-sub">Payback: ${paybackStr}</div>
+          </div>
+        </div>
+
+        <div class="onepager-section">
+          <div class="onepager-section-title">Cost of Poor Synchrony — Breakdown</div>
+          <div class="onepager-row"><span class="onepager-row-label">Turnover (22% attrition × $150K/departure)</span><span class="onepager-row-value red">${fmt(snap.d1)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Wasted time &amp; coordination loss (14 hrs/wk)</span><span class="onepager-row-value red">${fmt(snap.d2)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Meeting waste &amp; rework (HBR/PMI)</span><span class="onepager-row-value red">${fmt(snap.d3)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Conflict &amp; misalignment drag (CPP/SHRM)</span><span class="onepager-row-value red">${fmt(snap.d4)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Disengagement churn (Gallup)</span><span class="onepager-row-value red">${fmt(snap.d5)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Missed deadlines &amp; delivery overruns (PMI/Deltek)</span><span class="onepager-row-value red">${fmt(snap.d6)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Absenteeism from burnout (Gallup)</span><span class="onepager-row-value red">${fmt(snap.d7)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Toxic culture virality &amp; bad apple effect (Felps et al.)</span><span class="onepager-row-value red">${fmt(snap.d8)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Underperformance from misalignment (McKinsey)</span><span class="onepager-row-value red">${fmt(snap.d9)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Failed &amp; abandoned projects (Standish Group)</span><span class="onepager-row-value red">${fmt(snap.d10)}</span></div>
+          <div class="onepager-row" style="font-weight:500"><span class="onepager-row-label" style="color:var(--text)">Total annual synchrony cost</span><span class="onepager-row-value red">${fmt(snap.total)}</span></div>
+        </div>
+
+        <div class="onepager-section">
+          <div class="onepager-section-title">Value Recovered with Syneurgy — ${scenLabel}</div>
+          <div class="onepager-row"><span class="onepager-row-label">Turnover reduction</span><span class="onepager-row-value green">${fmt(snap.roi_d1)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Time waste recovery</span><span class="onepager-row-value green">${fmt(snap.roi_d2)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Meeting &amp; rework improvement</span><span class="onepager-row-value green">${fmt(snap.roi_d3)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Conflict reduction</span><span class="onepager-row-value green">${fmt(snap.roi_d4)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Churn reduction</span><span class="onepager-row-value green">${fmt(snap.roi_d5)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Missed deadline improvement</span><span class="onepager-row-value green">${fmt(snap.roi_d6)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Absenteeism reduction</span><span class="onepager-row-value green">${fmt(snap.roi_d7)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Toxic culture prevention</span><span class="onepager-row-value green">${fmt(snap.roi_d8)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Underperformance recovery</span><span class="onepager-row-value green">${fmt(snap.roi_d9)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Failed project reduction</span><span class="onepager-row-value green">${fmt(snap.roi_d10)}</span></div>
+          <div class="onepager-row" style="font-weight:500"><span class="onepager-row-label" style="color:var(--text)">Total value recovered</span><span class="onepager-row-value green">${fmt(snap.totalVal)}</span></div>
+          <div class="onepager-row"><span class="onepager-row-label">Syneurgy investment (${tierLabel})</span><span class="onepager-row-value">${currentTier.tier==='bespoke'?'$175,000+':fmt(snap.price)}</span></div>
+          <div class="onepager-row" style="font-weight:500"><span class="onepager-row-label" style="color:var(--text)">Net Year-1 gain</span><span class="onepager-row-value green">${fmt(snap.netGain)}</span></div>
+        </div>
+
+        <div class="onepager-section">
+          <div class="onepager-section-title">Study Results — 6-Week IRB Study (n=67, 12 teams)</div>
+          <div class="onepager-science">
+            <div class="onepager-sci-stat"><div class="onepager-sci-num">19%</div><div class="onepager-sci-label">Performance improvement</div></div>
+            <div class="onepager-sci-stat"><div class="onepager-sci-num">26.5%</div><div class="onepager-sci-label">Increase in mutual trust</div></div>
+            <div class="onepager-sci-stat"><div class="onepager-sci-num">41%</div><div class="onepager-sci-label">Psychological safety gain</div></div>
+            <div class="onepager-sci-stat"><div class="onepager-sci-num">30.75%</div><div class="onepager-sci-label">Team synchrony increase</div></div>
+          </div>
+          <p style="font-size:10px;color:var(--text-dim);margin-top:0.5rem;line-height:1.6">These are 6-week baselines, not ceilings. Synchrony is a learned capability. Gains persist and compound as teams build synchrony as practiced habit — organizations don't revert to dysfunction they've already overcome.</p>
+        </div>
+
+        <div class="onepager-footer">
+          syneurgy.com &nbsp;·&nbsp; Based on published research: SHRM, Asana, HBR, PMI, CPP Global, McKinsey Global Institute &nbsp;·&nbsp; Conservative estimates throughout
+        </div>
+      `;
+    }
+
+    /* ══ METHODOLOGY TOGGLES ════════════════════════════════════ */
+    function toggleMethodology(id) {
+      const m = document.getElementById(id);
+      m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    }
+
+    /* ══ INIT ═══════════════════════════════════════════════════ */
+    updateCost();
+    updateROI();
+  
+</script>
